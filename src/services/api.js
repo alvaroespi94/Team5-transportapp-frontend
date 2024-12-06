@@ -1,76 +1,50 @@
-import axios from 'axios';
+// api.js
+import axios from "axios";
 
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = "http://localhost:5000";
 
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("authToken");
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-export const authRider = async () => {
+export const authUser = async (loginData) => {
   try {
-    const response = await api.get('/api/Authentication/auth_rider');
-    return response;
+    const response = await api.post("/api/Authentication/log_in", loginData);
+    const { data } = response;
+    if (data.token) localStorage.setItem("authToken", data.token);
+    return data;
   } catch (error) {
-    console.error('Error authenticating rider:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || "Login failed");
   }
 };
 
-export const authDriver = async () => {
+export const Register = async (registerData) => {
   try {
-    const response = await api.get('api/Authentication/auth_driver');
-    return response;
-  } catch (error) {
-    console.error('Error authenticating driver:', error);
-    throw error;
-  }
-};
-
-export const authUser = async () => {
-  try {
-    const response = await api.get('api/Authentication/auth_user');
-    return response;
-  } catch (error) {
-    console.error('Error authenticating user:', error);
-    throw error;
-  }
-};
-
-export const logoutUser = async () => {
-  try {
-    const response = await api.get('api/Authentication/log_out');
+    const response = await api.post("/api/Authentication/register", registerData);
     return response.data;
   } catch (error) {
-    console.error('Error logging out:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || "Registration failed");
   }
 };
 
-export const otpVerification = async (otpCode) => {
+export const otpVerification = async (otpData) => {
   try {
-    const response = await api.get(`api/Authentication/otp_verification`, {
-      params: { otp: otpCode },
-    });
+    const response = await api.post("/api/Authentication/otp_verification", otpData);
     return response.data;
   } catch (error) {
-    console.error('Error verifying OTP:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || "OTP verification failed");
   }
 };
 
@@ -104,15 +78,27 @@ export const registerDriver = async (driverData) => {
   }
 };
 
-// Profile API call
-export const getProfileInfo = async () => {
+export const logout = async () => {
   try {
-    const response = await api.get('api/Authentication/get_profile_info');
+    const response = await api.post("/api/Authentication/log_out");
+    localStorage.removeItem("authToken");
     return response.data;
   } catch (error) {
-    console.error('Error fetching profile information:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || "Logout failed");
   }
+};
+
+export const getProfileInfo = async () => {
+  try {
+    const response = await api.get("/api/Authentication/get_profile_info");
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch profile info");
+  }
+};
+
+export const getAuthToken = () => {
+  return localStorage.getItem("authToken");
 };
 
 export default api;

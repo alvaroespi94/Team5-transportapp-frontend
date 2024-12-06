@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import Register from "./components/Authentication/Register.jsx";
@@ -12,7 +12,7 @@ import Rides from "./pages/Rides.jsx";
 import NotFound from "./pages/NotFound";
 import Header from "./components/Shared/Header.jsx";
 import Footer from "./components/Shared/Footer.jsx";
-import ProtectedRoute from "./components/Shared/ProtectedRoute";
+import ProtectedRoute from "./components/Shared/ProtectedRoute.jsx";
 
 function App() {
   return (

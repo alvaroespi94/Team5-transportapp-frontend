@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getAuthToken } from '../services/auth.js';
+import { getAuthToken } from '../services/api.js';
 
 const Rides = () => {
   const [rides, setRides] = useState([]);

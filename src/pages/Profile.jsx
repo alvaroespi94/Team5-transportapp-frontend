@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getAuthToken } from '../services/auth.js';
+import { getAuthToken } from '../services/api.js';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
