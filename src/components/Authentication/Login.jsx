@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
+//import { mockAuthUser, mockOtpVerification } from "../../services/api.js";
 import { authUser, otpVerification } from "../../services/api.js";
 
 export default function Login() {
@@ -8,31 +9,36 @@ export default function Login() {
   const [otp, setOtp] = useState("");
   const [otpRequired, setOtpRequired] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await authUser();
+      const response = await authUser({ email });
       if (response.status === 204) {
-        setOtpRequired(true); // OTP is required
-        setError("OTP required. Please check your email.");
-      } else {
-        setAuth(response.data); // Save authenticated user data in the context
+        setOtpRequired(true);
+        setMessage("OTP sent to your email. Please enter it to continue.");
         setError("");
+      } else {
+        setAuth(response.data);
+        setError("");
+        setMessage("Login successful!");
       }
     } catch (err) {
-      setError("Authentication failed. Please try again.");
+      setError(err.message || "Authentication failed. Please try again.");
+      setMessage("");
     }
   };
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
     try {
-      const user = await otpVerification(otp);
-      setAuth(user); // Save the authenticated user data in the context
+      const user = await otpVerification({ otp });
+      setAuth(user);
       setError("");
+      setMessage("Login successful!");
     } catch (err) {
-      setError("OTP verification failed. Please try again.");
+      setError(err.message || "OTP verification failed. Please try again.");
     }
   };
 
@@ -60,6 +66,7 @@ export default function Login() {
         )}
         <button type="submit">{otpRequired ? "Verify OTP" : "Login"}</button>
       </form>
+      {message && <p style={{ color: "green" }}>{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );

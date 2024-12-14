@@ -1,7 +1,8 @@
 // api.js
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000";
+//const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://csci-team5.igeeksng.com/";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -97,8 +98,50 @@ export const getProfileInfo = async () => {
   }
 };
 
+export const setProfileInfo = async (profileData) => {
+  try {
+      const response = await api.post("/api/Authentication/set_profile_info", profileData, {
+          headers: { "Content-Type": "application/json" },
+      });
+      return response.data;
+  } catch (error) {
+      console.error("Error setting profile info:", error);
+      throw error;
+  }
+};
+
 export const getAuthToken = () => {
   return localStorage.getItem("authToken");
 };
+
+/*
+// Mock Authentication Functions
+export const mockAuthUser = async ({ email }) => {
+  // Simulate behavior of a real endpoint
+  if (email === "test@example.com") {
+    return { status: 204 }; // OTP required
+  } else if (email === "user@example.com") {
+    const mockToken = "mocked_token_12345";
+    localStorage.setItem("authToken", mockToken);
+    return { status: 200, data: { token: mockToken, user: { email } } };
+  }
+  throw new Error("User not found");
+};
+
+export const mockOtpVerification = async ({ otp }) => {
+  if (otp === "123456") {
+    const user = { email: "test@example.com", name: "Test User" };
+    const mockToken = "mocked_otp_token_67890";
+    localStorage.setItem("authToken", mockToken);
+    return { ...user, token: mockToken };
+  }
+  throw new Error("Invalid OTP");
+};
+
+export const logout = async () => {
+  localStorage.removeItem("authToken");
+  return { message: "Logged out successfully" };
+};
+*/
 
 export default api;

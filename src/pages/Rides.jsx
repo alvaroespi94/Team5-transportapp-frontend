@@ -16,7 +16,7 @@ const Rides = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:5000/rides', {
+        const response = await axios.get('http://localhost:5000/api/rides', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setRides(response.data);
